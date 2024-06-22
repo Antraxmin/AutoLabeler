@@ -66,8 +66,17 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Warning", "Load an image first.")
 
     def display_detected_objects(self):
-        for obj in self.detected_objects:
-            print(f"Detected {obj['class']} at {obj['bbox']}")
+        if self.image is not None:
+            image_with_boxes = self.image.copy()
+            for obj in self.detected_objects:
+                class_name = str(obj["class"]) 
+                bbox = obj["bbox"]
+                xmin, ymin, xmax, ymax = [int(coord) for coord in bbox]
+                
+                cv2.rectangle(image_with_boxes, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
+                cv2.putText(image_with_boxes, class_name, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        
+        self.display_image(image_with_boxes)
 
     def save_labels(self):
         if self.detected_objects:
