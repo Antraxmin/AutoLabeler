@@ -11,6 +11,9 @@ env/
 logs/
 outputs/
 
+models/
+uploads/
+
 config/config.yaml
 
 dist/

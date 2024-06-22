@@ -58,8 +58,10 @@ class MainWindow(QMainWindow):
 
     def detect_objects(self):
         if self.image is not None:
-            self.detected_objects = detect_objects(self.image)
-            self.display_detected_objects()
+            detected_objects = detect_objects(self.image) 
+            if detected_objects is not None:
+                self.detected_objects = detected_objects
+                self.display_detected_objects()
         else:
             QMessageBox.warning(self, "Warning", "Load an image first.")
 
