@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         self.button_layout.addWidget(self.load_button)
 
         self.detect_button = QPushButton("Detect Objects", self)
-        self.detect_button.clicked.connect(self.detect_objects)
+        self.detect_button.clicked.connect(self.detect_image)
         self.button_layout.addWidget(self.detect_button)
 
         self.save_button = QPushButton("Save Labels", self)
@@ -56,16 +56,27 @@ class MainWindow(QMainWindow):
         pixmap = QPixmap.fromImage(qimage)
         self.image_label.setPixmap(pixmap)
 
-    def detect_objects(self):
+    def detect_image(self):
         if self.image is not None:
-            self.detected_objects = detect_objects(self.image)
-            self.display_detected_objects()
+            detected_objects = detect_objects(self.image) 
+            if detected_objects is not None:
+                self.detected_objects = detected_objects
+                self.display_detected_objects()
         else:
             QMessageBox.warning(self, "Warning", "Load an image first.")
 
     def display_detected_objects(self):
-        for obj in self.detected_objects:
-            print(f"Detected {obj['class']} at {obj['bbox']}")
+        if self.image is not None:
+            image_with_boxes = self.image.copy()
+            for obj in self.detected_objects:
+                class_name = str(obj["class"]) 
+                bbox = obj["bbox"]
+                xmin, ymin, xmax, ymax = [int(coord) for coord in bbox]
+                
+                cv2.rectangle(image_with_boxes, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
+                cv2.putText(image_with_boxes, class_name, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        
+        self.display_image(image_with_boxes)
 
     def save_labels(self):
         if self.detected_objects:
