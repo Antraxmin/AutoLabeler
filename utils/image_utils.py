@@ -15,11 +15,23 @@ def detect_objects(image_path):
     model = YOLO('models/best.pt')
     results = model(image_path)
 
+    detected_objects = []
+    
     for result in results:
+        # result에서 필요한 정보를 추출
+        for obj in result.boxes:
+            detected_object = {
+                "class": obj.cls,  # 객체 클래스
+                "bbox": obj.xyxy  # 경계 상자 (xmin, ymin, xmax, ymax)
+            }
+            detected_objects.append(detected_object)
+        
         result.show()
         result.save(filename='uploads/result.jpg')
     
-    return detect_objects
+    return detected_objects
+   
+
 
 def save_labels(image_path, detected_objects):
     labels_path = image_path.replace('.jpg', '.txt').replace('.jpeg', '.txt').replace('.png', '.txt').replace('.bmp', '.txt')

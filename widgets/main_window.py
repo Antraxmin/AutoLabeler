@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         self.button_layout.addWidget(self.load_button)
 
         self.detect_button = QPushButton("Detect Objects", self)
-        self.detect_button.clicked.connect(self.detect_objects)
+        self.detect_button.clicked.connect(self.detect_image)
         self.button_layout.addWidget(self.detect_button)
 
         self.save_button = QPushButton("Save Labels", self)
@@ -56,7 +56,7 @@ class MainWindow(QMainWindow):
         pixmap = QPixmap.fromImage(qimage)
         self.image_label.setPixmap(pixmap)
 
-    def detect_objects(self):
+    def detect_image(self):
         if self.image is not None:
             detected_objects = detect_objects(self.image) 
             if detected_objects is not None:
